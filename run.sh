@@ -13,7 +13,7 @@ for test_file in "${test_files[@]}"; do
     # Check if input file exists
     if [ -f "$input_file" ]; then
         # Run ./decomment and redirect outputs
-        ./decomment < "$input_file" > "${test_file}_output" 2> "${test_file}_errors"
+        ./decomment < "$input_file" > "./output/${test_file}_output" 2> "./error/${test_file}_errors"
         echo "Processed $input_file. Output saved to ${test_file}_output, errors to ${test_file}_errors."
     else
         echo "Test file $input_file not found."
