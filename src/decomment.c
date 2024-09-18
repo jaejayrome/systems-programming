@@ -131,12 +131,12 @@ int main(void)
     // Case 1: Handle single-line comments
     if (temp == 1 && currentState == 2)
     {
-      removeLastCharacterOfResult(result); // Remove preceding '/'
+      removeLastCharacterOfResult(result);
       while ((ich = getchar()) != EOF && ich != '\n')
         ;
       currentState = 0;
       result = concatString(result, " ");
-      result = concatString(result, "\n"); // Preserve newline
+      result = concatString(result, "\n");
       lineNumber++;
       prevCharacter = '\0';
       continue;
@@ -145,14 +145,14 @@ int main(void)
     // Case 2: Handle multi-line comments
     if (temp == 1 && currentState == 7)
     {
-      removeLastCharacterOfResult(result); // Remove preceding '/'
+      removeLastCharacterOfResult(result);
       int isUnterminatedComment = 1;
       // Skip characters until the end of multi-line comment
       while ((ich = getchar()) != EOF)
       {
         if (ich == '\n')
         {
-          result = concatString(result, "\n"); // Preserve newline
+          result = concatString(result, "\n");
           lineNumber++;
         }
         if (ich == '*')
