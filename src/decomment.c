@@ -8,7 +8,6 @@
 // 1: Pre-Comment Code State (encountered /)
 // 2: Single-Line Comment Code State
 // 3: String State (Inside a string literal)
-
 // 6: Multi-Line Comment End State (encountered * after /*)
 // 7: Multi-Line Comment State
 
@@ -106,6 +105,7 @@ char *concatString(char *str1, const char *str2)
 
 int main(void)
 {
+  setlocale(LC_ALL, "");
   int ich;
   int lineNumber = 1;
   char ch[2] = {0};          // Buffer for reading characters
@@ -113,7 +113,6 @@ int main(void)
   char prevCharacter = '\0'; // Used to store the previous character
   char *result = (char *)calloc(1, sizeof(char));
   result[0] = '\0';
-  setlocale(LC_ALL, "");
 
   while (1)
   {
@@ -132,25 +131,28 @@ int main(void)
     // Case 1: Handle single-line comments
     if (temp == 1 && currentState == 2)
     {
+      removeLastCharacterOfResult(result); // Remove preceding '/'
       while ((ich = getchar()) != EOF && ich != '\n')
         ;
       currentState = 0;
-      removeLastCharacterOfResult(result);
       result = concatString(result, " ");
+      result = concatString(result, "\n"); // Preserve newline
       lineNumber++;
-      char prevCharacter = '\0';
+      prevCharacter = '\0';
       continue;
     }
 
     // Case 2: Handle multi-line comments
     if (temp == 1 && currentState == 7)
     {
+      removeLastCharacterOfResult(result); // Remove preceding '/'
       int isUnterminatedComment = 1;
       // Skip characters until the end of multi-line comment
       while ((ich = getchar()) != EOF)
       {
         if (ich == '\n')
         {
+          result = concatString(result, "\n"); // Preserve newline
           lineNumber++;
         }
         if (ich == '*')
@@ -166,7 +168,6 @@ int main(void)
           }
         }
       }
-      removeLastCharacterOfResult(result);
       result = concatString(result, " ");
       if (isUnterminatedComment)
       {
@@ -176,7 +177,7 @@ int main(void)
         return (EXIT_FAILURE);
       }
       currentState = 0;
-      char prevCharacter = '\0';
+      prevCharacter = '\0';
       continue;
     }
 
@@ -184,6 +185,12 @@ int main(void)
     if (currentState == 0 || currentState == 3 || currentState == 4 || currentState == 1)
     {
       result = concatString(result, ch);
+    }
+
+    // Increment Line Number if there's any newline character
+    if (ch[0] == '\n')
+    {
+      lineNumber++;
     }
 
     // Update previous character
